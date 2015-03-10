@@ -1,0 +1,27 @@
+{% if paginate.getTotalPages() > 1 %}
+    {% set route = app.request.attributes.get('_route') %}
+    {% set urlParams = app.request.attributes.get('_route_params')|merge(app.request.query.all) %}
+    <nav class="text-center">
+        <ul class="pagination">
+            {% for page in paginate.getPagesInRange().start..paginate.getPagesInRange().end %}
+                {% if loop.first and paginate.getPagesInRange().showStart %}
+                    <li>
+                        <a href="{{ path(route,urlParams|merge({'page':null})) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li{% if paginate.getCurrentPage() == page %} class="active"{% endif %}>
+                    <a href="{% if page == 1 %}{{ path(route,urlParams|merge({'page':null})) }}{% else %}{{ path(route,urlParams|merge({'page':page})) }}{% endif %}">{{ page }}</a>
+                </li>
+                {% if loop.last and paginate.getPagesInRange().showEnd %}
+                    <li>
+                        <a href="{{ path(route,urlParams|merge({'page':paginate.getTotalPages()})) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endif %}
